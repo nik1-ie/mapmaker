@@ -61,8 +61,7 @@ while True:
         if tev == "ClicGauche":
             abs = fltk.abscisse(ev)
             ord = fltk.ordonnee(ev)
-            print(abs/larg, ord/haut)
-
-            #if larg < fltk.abscisse(ev) < fltk.largeur_fenetre() - larg and haut< fltk.ordonnee(ev) < fltk.hauteur_fenetre() - haut:
+            coord_clic = (abs//larg, ord//haut)
+            print(coord_clic)
                 
         fltk.mise_a_jour()
