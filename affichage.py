@@ -38,14 +38,31 @@ plateau = [['SSSS','SSSS','SSSS','SSSS', None],
            ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
            ['SSSS', None, None, None, None],
            [None, None, None, None, None]]
+
 lignes = 5
 colonnes = 5
 affichage_map(plateau, lignes, colonnes)
 quadrillage(lignes, colonnes)
+
+
+
+
+if __name__ == "__main__":
+    larg = fltk.largeur_fenetre() //lignes
+    haut = fltk.hauteur_fenetre() // colonnes
+    
+
 while True:
         ev = fltk.donne_ev()
         tev = fltk.type_ev(ev)
         if tev == "Quitte":
             fltk.ferme_fenetre()
             break
+        if tev == "ClicGauche":
+            abs = fltk.abscisse(ev)
+            ord = fltk.ordonnee(ev)
+            print(abs/larg, ord/haut)
+
+            #if larg < fltk.abscisse(ev) < fltk.largeur_fenetre() - larg and haut< fltk.ordonnee(ev) < fltk.hauteur_fenetre() - haut:
+                
         fltk.mise_a_jour()
