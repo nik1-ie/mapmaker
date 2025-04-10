@@ -31,7 +31,18 @@ def affichage_map(plateau, lignes, colonnes):
                 fltk.image(j * (larg / lignes), i * (haut/colonnes), chemin + plateau[i][j] + '.png', largeur=larg // lignes, hauteur=haut // colonnes, ancrage='nw')
     fltk.mise_a_jour()
 
-
+def emplacement_valide(grille, i, j, nom_tuile):
+    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+    dico = {0:2, 1: 3, 2: 0, 3: 1}
+    bon = True
+    for indice in range(len(directions)):
+        x = directions[indice][0]
+        y = directions[indice][1]
+        if grille[i + x][j + y][dico[indice]] == nom_tuile[indice]:
+            bon = True
+        else:
+            bon = False
+    return bon
 fltk.cree_fenetre(800, 800)
 plateau = [['SSSS','SSSS','SSSS','SSSS', None],
            ['SSSS','SHGS', 'SHRH', 'SHFH', None],
@@ -39,18 +50,23 @@ plateau = [['SSSS','SSSS','SSSS','SSSS', None],
            ['SSSS', None, None, None, None],
            [None, None, None, None, None]]
 
+plateau_pasbon = [['SSSS','SSSS','SSSS','SSSS', None],
+           ['SSSS','SSDH', 'SHRH', 'SHFH', None],
+           ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
+           ['SSSS', None, None, None, None],
+           [None, None, None, None, None]]# pour tester avec un plateau qui n'existe pas
 lignes = 5
 colonnes = 5
 affichage_map(plateau, lignes, colonnes)
 quadrillage(lignes, colonnes)
-
+print(emplacement_valide(plateau, 1, 2, 'SHRH'))
 
 
 
 if __name__ == "__main__":
     larg = fltk.largeur_fenetre() //lignes
     haut = fltk.hauteur_fenetre() // colonnes
-    
+
 
 while True:
         ev = fltk.donne_ev()
