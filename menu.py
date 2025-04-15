@@ -1,6 +1,8 @@
 # --- Imports
 import fltk
 import affichage
+import globals
+import moteur
 
 # --- Fonctions
 def menu():
@@ -11,7 +13,7 @@ def menu():
     fltk.texte(400, 50, "MapMaker", taille=30, ancrage="center", couleur="black")
     boutons = [
         ("Créer", 300, 100),
-        ("JSP", 300, 180),
+        ("Solveur test", 300, 180),
         ("JSP2", 300, 260)
         #vous avez capté l'idée...
     ]
@@ -22,6 +24,19 @@ def menu():
 # --- Main
 if __name__ == "__main__":
     menu()
+    solving_test = [
+        ['SSSS', 'SSSS', 'SSSS', 'SSSS', None, None, None, None, None, None],
+        ['SSSS', 'SHGS', 'SHRH', 'SHFH', None, None, None, None, None, None],
+        ['SSSS', None, 'RMPP', 'FMMM', 'PPMM', None, None, None, None, None],
+        ['SSSS', None, None, None, None, None, None, None, None, None],
+        [None, None, None, None, None, None, None, None, None, None],
+        [None, None, None, None, None, None, None, None, None, None],
+        [None, None, None, None, None, None, None, None, None, None],
+        [None, None, None, None, None, None, None, None, None, None],
+        [None, None, None, None, None, None, None, None, None, None],
+        [None, None, None, None, None, None, None, None, None, None]
+    ]
+    
     while True:
         ev = fltk.donne_ev()
         tev = fltk.type_ev(ev)
@@ -33,7 +48,11 @@ if __name__ == "__main__":
             if 300<x<500 and 100<y<140:
                 fltk.efface_tout()
                 affichage.main()
-                
+                break
+            if 300 < x < 500 and 180 < y < 220:
+                fltk.efface_tout()
+                affichage.quadrillage(globals.lignes, globals.colonnes)
+                moteur.solveur(solving_test)
                 break
 
                 

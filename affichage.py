@@ -1,5 +1,8 @@
+# --- Imports
 import fltk
+import globals
 
+# --- Fonctions
 def quadrillage(lignes, colonnes):
     '''
     Fonction qui créé et affiche la grille en fonction de la taille donnée.
@@ -31,19 +34,6 @@ def affichage_map(plateau, lignes, colonnes):
                 fltk.image(j * (larg / lignes), i * (haut/colonnes), chemin + plateau[i][j] + '.png', largeur=larg // lignes, hauteur=haut // colonnes, ancrage='nw')
     fltk.mise_a_jour()
 
-def emplacement_valide(grille, i, j, nom_tuile):
-    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
-    dico = {0:2, 1: 3, 2: 0, 3: 1}
-    bon = True
-    for indice in range(len(directions)):
-        x = directions[indice][0]
-        y = directions[indice][1]
-        if grille[i + x][j + y][dico[indice]] == nom_tuile[indice]:
-            bon = True
-        else:
-            bon = False
-    return bon
-
 def plateau_vide(l, c):
     '''
     Fonction permettant de créer une grille vide à remplir par la suite.
@@ -54,8 +44,8 @@ def plateau_vide(l, c):
     return plateau
 
 def main():
-    lignes = 10
-    colonnes = 10
+    lignes = globals.lignes
+    colonnes = globals.colonnes
     plateau = plateau_vide(lignes, colonnes)
     affichage_map(plateau, lignes, colonnes)
     quadrillage(lignes, colonnes)

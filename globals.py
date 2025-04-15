@@ -1,0 +1,3 @@
+# --- Fichiers de variables globales...
+lignes = 10
+colonnes = 10
