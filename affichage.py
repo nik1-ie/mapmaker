@@ -43,41 +43,53 @@ def emplacement_valide(grille, i, j, nom_tuile):
         else:
             bon = False
     return bon
-fltk.cree_fenetre(800, 800)
-plateau = [['SSSS','SSSS','SSSS','SSSS', None],
-           ['SSSS','SHGS', 'SHRH', 'SHFH', None],
-           ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
-           ['SSSS', None, None, None, None],
-           [None, None, None, None, None]]
 
-plateau_pasbon = [['SSSS','SSSS','SSSS','SSSS', None],
-           ['SSSS','SSDH', 'SHRH', 'SHFH', None],
-           ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
-           ['SSSS', None, None, None, None],
-           [None, None, None, None, None]]# pour tester avec un plateau qui n'existe pas
-lignes = 5
-colonnes = 5
-affichage_map(plateau, lignes, colonnes)
-quadrillage(lignes, colonnes)
-print(emplacement_valide(plateau, 1, 2, 'SHRH'))
+def plateau_vide(l, c):
+    '''
+    Fonction permettant de créer une grille vide à remplir par la suite.
+    Arguments : l, c (int) - taille des lignes et colonnes
+    Returns : plateau (list de list) - grille vide
+    '''
+    plateau = [[None for _ in range(c)] for _ in range(l)]
+    return plateau
 
+def main():
+    lignes = 10
+    colonnes = 10
+    plateau = plateau_vide(lignes, colonnes)
+    affichage_map(plateau, lignes, colonnes)
+    quadrillage(lignes, colonnes)
+    # print(emplacement_valide(plateau, 1, 2, 'SHRH')) - Y'a un pb quand tout est vide ... ?
+
+    
+    larg = fltk.largeur_fenetre() //lignes
+    haut = fltk.hauteur_fenetre() // colonnes
+    while True:
+            ev = fltk.donne_ev()
+            tev = fltk.type_ev(ev)
+            if tev == "Quitte":
+                fltk.ferme_fenetre()
+                break
+            if tev == "ClicGauche":
+                abs = fltk.abscisse(ev)
+                ord = fltk.ordonnee(ev)
+                coord_clic = (abs//larg, ord//haut)
+                print(coord_clic)
+                    
+            fltk.mise_a_jour()
 
 
 if __name__ == "__main__":
-    larg = fltk.largeur_fenetre() //lignes
-    haut = fltk.hauteur_fenetre() // colonnes
+    fltk.cree_fenetre(800, 800)
+    main()
+    plateau = [['SSSS','SSSS','SSSS','SSSS', None],
+            ['SSSS','SHGS', 'SHRH', 'SHFH', None],
+            ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
+            ['SSSS', None, None, None, None],
+            [None, None, None, None, None]]
 
-
-while True:
-        ev = fltk.donne_ev()
-        tev = fltk.type_ev(ev)
-        if tev == "Quitte":
-            fltk.ferme_fenetre()
-            break
-        if tev == "ClicGauche":
-            abs = fltk.abscisse(ev)
-            ord = fltk.ordonnee(ev)
-            coord_clic = (abs//larg, ord//haut)
-            print(coord_clic)
-                
-        fltk.mise_a_jour()
+    plateau_pasbon = [['SSSS','SSSS','SSSS','SSSS', None],
+            ['SSSS','SSDH', 'SHRH', 'SHFH', None],
+            ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
+            ['SSSS', None, None, None, None],
+            [None, None, None, None, None]]# pour tester avec un plateau qui n'existe pas
