@@ -1,5 +1,6 @@
 # --- Imports
 from affichage import *
+import globals
 
 # --- Fonctions
 
@@ -22,11 +23,26 @@ def emplacement_valide(grille, i, j, nom_tuile):
 def smart_pick(plateau, i, j, dir):
     '''
     Fonction choisissant la tuile PARFAITE dans la direction choisie
-    Arguments : plateau (list) - grille de tuiels
+    Arguments : plateau (list) - grille de tuiles
                 i, j (int) - position actuelle
                 dir (tuple) - direction recherchée
+    Return : tuile (str) - nom de tuile existante et qui valide les conditions
     '''
     tuile = ""
+    x,y = dir
+    tuilex, tuiley = i+x, j+y
+    prec_tuile = plateau[i][j]
+    
+    if i+x > len(plateau) or j+y > len(plateau[0]): #Si la direction dans laquelle on veut aller est inexistante
+        print("This shouldn't happen.")
+        return prec_tuile
+    
+    dico = {0:2, 1: 3, 2: 0, 3: 1}
+    
+    # get connexion letter on the needed side. 
+    # look in globals.pack_1 for a tuile that matches
+    # verify if anything clashes nearby
+    # yes or no, retry if needed idk
     
     return tuile
 
@@ -46,11 +62,15 @@ def solveur(plateau, i=0, j=0):
     if j == len(plateau[0]):
         new_i, new_j = i+1, 0
         if plateau[new_i][new_j]==None:
-            dir = (0, 1)
+            print("Empty case, filling it up!")
+            dir = (0, 0)
+        else:
+            print("On avance en x")
+            dir = (1, 0)
     else:
         new_i, new_j = i, j+1
         if new_j == len(plateau[0]):
-            dir = 
+            dir = (1, 0)
         
     plateau2 = plateau 
     plateau2[i + dir[0]][j + dir[1]]=smart_pick(plateau, i,j)
@@ -66,4 +86,4 @@ if __name__ == "__main__":
               ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
               ['SSSS', None, None, None, None],
               [None, None, None, None, None]]
-    solveur()
+    solveur(plateau)
