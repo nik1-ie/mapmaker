@@ -27,7 +27,7 @@ def recup_nom(grille, i, j):
         y = directions[indice][1]
         if grille[i + x][j + y] is None:
             nom = " "
-            #recup_nom(grille, i + x, j + y)
+            #recup_nom(grille, i + x, j + y) faudrait pouvoir vérif le None avec une priorité ou en enlevant de la liste des cases vides//// ou bien faire un aleatoire  ou tempo jspp
         else:
             nom += grille[i + x][j + y][dico[indice]]
     return nom
