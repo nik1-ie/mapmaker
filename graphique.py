@@ -95,7 +95,7 @@ def gerer_clic(x, y):
 
 def main():
     global pan_x, pan_y
-    fltk.cree_fenetre(800, 600)
+    
     
     while True:
         ev = fltk.donne_ev()
@@ -122,4 +122,5 @@ def main():
     fltk.ferme_fenetre()
 
 if __name__ == "__main__":
+    fltk.cree_fenetre(800, 600)
     main()

@@ -1,6 +1,6 @@
 # --- Imports
 import fltk
-import affichage
+import graphique
 import globals
 import moteur
 
@@ -47,14 +47,14 @@ if __name__ == "__main__":
             x, y = fltk.abscisse(ev), fltk.ordonnee(ev)
             if 300<x<500 and 100<y<140:
                 fltk.efface_tout()
-                affichage.main()
+                fltk.redimensionne_fenetre(800, 600)
+                graphique.main()
                 break
             if 300 < x < 500 and 180 < y < 220:
                 fltk.efface_tout()
-                affichage.quadrillage(globals.lignes, globals.colonnes)
+                fltk.redimensionne_fenetre(800, 600)
+                graphique.quadrillage(globals.lignes, globals.colonnes)
                 moteur.solveur(solving_test)
                 break
-
-                
         fltk.mise_a_jour()
         
