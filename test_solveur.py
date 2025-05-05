@@ -1,10 +1,40 @@
-# --- Imports
-# from affichage import *
+# Imports
 import globals
+import os
+import re
 
-# --- Fonctions
+
+# Conditions des tuiles aled
+def recup_toutes_tuiles(tiles_dir="pack1/tuiles/"):
+    """Récupère toutes les tuiles disponibles (noms sans extension)"""
+    return [f[:-4] for f in os.listdir(tiles_dir)]
+print(recup_toutes_tuiles())
 
 
+def verifier_correspondance(tuile, modele):
+    """Vérifie si une tuile correspond au modèle (4 caractères avec ? pour joker)"""
+    if len(tuile) != 4 or len(modele) != 4:
+        return False
+        
+    for i in range(4):
+        if modele[i] != '?' and tuile[i] != modele[i]:
+            return False
+    return True
+
+
+def rechercher_tuiles(modele):
+    """Retourne TOUTES les tuiles correspondant au modèle sous forme de liste"""
+    tuiles_disponibles = recup_toutes_tuiles()
+    resultats = []
+    
+    for tuile in tuiles_disponibles:
+        if verifier_correspondance(tuile, modele):
+            resultats.append(tuile)
+    
+    return resultats
+
+
+#Autre
 def emplacement_valide(grille, i, j, nom_tuile):
     directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
     dico = {0:2, 1: 3, 2: 0, 3: 1}
@@ -41,6 +71,23 @@ def recup_vide(grille):
                 coord.append((i,j))
     return coord
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Niki Core :
 def tuile_valide(grille, i, j, nom_tuile):
     '''
     Fonction vérifiant si l'amplacement de la tuile colle par rapport aux tuiles l'entourant.
@@ -146,6 +193,8 @@ def solveur(plateau, i=0, j=0):
     solveur(plateau2, new_i, new_j)
     return
 
+
+#TEST YIPIIII
 if __name__ == "__main__":
     plateau = [['SSSS','SSSS','SSSS','SSSS', None],
            ['SSSS','SHGS', 'SHRH', 'SHFH', None],
@@ -161,3 +210,21 @@ if __name__ == "__main__":
     #print(emplacement_valide(plateau, 1, 2, 'SHRM'))
     print(recup_vide(plateau))
     print(recup_nom(plateau, 3, 1))
+
+
+    # Liste de tuiles avec Forêt en haut et Rivière en bas
+    print("\nTuiles F?R? (Forêt haut, Rivière bas):")
+    print(rechercher_tuiles("F?R?"))
+
+    # Liste de tuiles avec Mer à gauche
+    print("\nTuiles ???S (Mer gauche):")
+    print(rechercher_tuiles("???S"))  # Retourne une liste
+
+    # Liste de tuiles avec Plaine en bas
+    print("\nTuiles ??P? (Plaine bas):")
+    print(rechercher_tuiles("??P?"))  # Retourne une liste
+    
+    # 4. Cas où aucune tuile ne correspond
+    print("\nTuiles XXXX (Aucune correspondance):")
+    print(rechercher_tuiles("XXXX"))  # Retourne une liste vide pour le moment mais tkt on doit faire la verif si c'est une cote ou pas
+    #genre si c'est une cote on met aleatoire spécial cote et sinon on met ce qu on veut hors cote.
