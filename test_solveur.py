@@ -1,7 +1,6 @@
 # Imports
 import globals
 import os
-import re
 
 
 # Conditions des tuiles aled
@@ -56,7 +55,7 @@ def recup_nom(grille, i, j):
         x = directions[indice][0]
         y = directions[indice][1]
         if grille[i + x][j + y] is None:
-            nom = " "
+            nom = "?"
             #recup_nom(grille, i + x, j + y) faudrait pouvoir vérif le None avec une priorité ou en enlevant de la liste des cases vides//// ou bien faire un aleatoire  ou tempo jspp
         else:
             nom += grille[i + x][j + y][dico[indice]]
@@ -90,7 +89,7 @@ def recup_vide(grille):
 #Niki Core :
 def tuile_valide(grille, i, j, nom_tuile):
     '''
-    Fonction vérifiant si l'amplacement de la tuile colle par rapport aux tuiles l'entourant.
+    Fonction vérifiant si l'emplacement de la tuile colle par rapport aux tuiles l'entourant.
     Arguments : grille (list de list) - plateau représentant notre map
                 i, j (int) - position de la tuile à  vérifier
                 nom_tuile (str) - nom de notre tuile
