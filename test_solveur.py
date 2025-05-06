@@ -9,7 +9,6 @@ from affichage import quadrillage, affichage_map
 def recup_toutes_tuiles(tiles_dir="pack1/tuiles/"):
     """Récupère toutes les tuiles disponibles (noms sans extension)"""
     return [f[:-4] for f in os.listdir(tiles_dir)]
-print(recup_toutes_tuiles())
 
 
 def verifier_correspondance(tuile, modele):
@@ -56,15 +55,13 @@ def recup_nom(grille, i, j):
     for indice in range(len(directions)):
         x = directions[indice][0]
         y = directions[indice][1]
-        print(x+i , j +y)
-        print(len(plateau[0]))
-        if  0 < x + i < len(plateau)-1 or 0 < j + y < len(plateau[0])-1:
+
+        if 0 <= x + i <= len(grille)-1 and 0 <= j + y <= len(grille[0])-1:
             if grille[i + x][j + y] is None:
                 nom += "?"
             else:
                 nom += grille[i + x][j + y][dico[indice]]
-        else:
-            pass
+
     return nom
 
 def recup_vide(grille):
@@ -77,10 +74,14 @@ def recup_vide(grille):
     return coord
 
 
+def solutions(coord_vide, plateau):
+    for elt in coord_vide:
+        print(recup_nom(plateau, elt[0],elt[1]))
 
-
-def solveur1():
-    pass
+def solveur1(coord_vide):
+    for elt in coord_vide:
+        print(elt)
+        
 
 
 
@@ -218,6 +219,7 @@ if __name__ == "__main__":
     quadrillage(lignes, colonnes)
     lst_cord_vide = recup_vide(plateau)
     print(lst_cord_vide)
-    print(recup_nom(plateau, 0, 4))
+    #print(recup_nom(plateau, 0, 4))
+    solutions(lst_cord_vide, plateau)
     while True:
         fltk.mise_a_jour()
