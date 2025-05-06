@@ -1,6 +1,8 @@
 # Imports
 import globals
 import os
+import fltk
+from affichage import quadrillage, affichage_map 
 
 
 # Conditions des tuiles aled
@@ -54,11 +56,15 @@ def recup_nom(grille, i, j):
     for indice in range(len(directions)):
         x = directions[indice][0]
         y = directions[indice][1]
-        if grille[i + x][j + y] is None:
-            nom = "?"
-            #recup_nom(grille, i + x, j + y) faudrait pouvoir vérif le None avec une priorité ou en enlevant de la liste des cases vides//// ou bien faire un aleatoire  ou tempo jspp
+        print(x+i , j +y)
+        print(len(plateau[0]))
+        if  0 < x + i < len(plateau)-1 or 0 < j + y < len(plateau[0])-1:
+            if grille[i + x][j + y] is None:
+                nom += "?"
+            else:
+                nom += grille[i + x][j + y][dico[indice]]
         else:
-            nom += grille[i + x][j + y][dico[indice]]
+            pass
     return nom
 
 def recup_vide(grille):
@@ -73,9 +79,8 @@ def recup_vide(grille):
 
 
 
-
-
-
+def solveur1():
+    pass
 
 
 
@@ -195,6 +200,7 @@ def solveur(plateau, i=0, j=0):
 
 #TEST YIPIIII
 if __name__ == "__main__":
+    fltk.cree_fenetre(800, 800)
     plateau = [['SSSS','SSSS','SSSS','SSSS', None],
            ['SSSS','SHGS', 'SHRH', 'SHFH', None],
            ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
@@ -206,24 +212,12 @@ if __name__ == "__main__":
            ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
            ['SSSS', None, None, None, None],
            [None, None, None, None, None]]
-    #print(emplacement_valide(plateau, 1, 2, 'SHRM'))
-    print(recup_vide(plateau))
-    print(recup_nom(plateau, 3, 1))
-
-
-    # Liste de tuiles avec Forêt en haut et Rivière en bas
-    print("\nTuiles F?R? (Forêt haut, Rivière bas):")
-    print(rechercher_tuiles("F?R?"))
-
-    # Liste de tuiles avec Mer à gauche
-    print("\nTuiles ???S (Mer gauche):")
-    print(rechercher_tuiles("???S"))  # Retourne une liste
-
-    # Liste de tuiles avec Plaine en bas
-    print("\nTuiles ??P? (Plaine bas):")
-    print(rechercher_tuiles("??P?"))  # Retourne une liste
-    
-    # 4. Cas où aucune tuile ne correspond
-    print("\nTuiles XXXX (Aucune correspondance):")
-    print(rechercher_tuiles("XXXX"))  # Retourne une liste vide pour le moment mais tkt on doit faire la verif si c'est une cote ou pas
-    #genre si c'est une cote on met aleatoire spécial cote et sinon on met ce qu on veut hors cote.
+    lignes = len(plateau)
+    colonnes = len(plateau[0])
+    affichage_map(plateau, lignes, colonnes)
+    quadrillage(lignes, colonnes)
+    lst_cord_vide = recup_vide(plateau)
+    print(lst_cord_vide)
+    print(recup_nom(plateau, 0, 4))
+    while True:
+        fltk.mise_a_jour()
