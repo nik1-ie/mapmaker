@@ -53,7 +53,7 @@ def rechercher_tuiles(modele, lst_tuiles_dispo):
 
 def est_liste_de_none(lst_principale):
     """
-    Vérifie si une liste 2D ne contient que des valeurs None.
+    Vérifie si une liste ne contient que des valeurs None.
     
     Args:
         lst_principale (list): Liste de listes à vérifier
@@ -239,6 +239,15 @@ if __name__ == "__main__":
     fltk.cree_fenetre(800, 800)
     
     plateau_vide = [[None for _ in range(10)] for _ in range(10)]
+    #plateau_vide = [
+    #["SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS"],
+    #["SSSS", "SHGS", None,   None,   None,   None,   "SHPH", "SSSS"],
+    #["SSSS", None,   "FMMM", "PPMM", None,   "RMPP", None,   "SSSS"],
+    #["SSSS", None,   "PPPF", None,   "GFGS", None,   None,   "SSSS"],
+    #["SSSS", None,   None,   "PBDP", None,   None,   None,   "SSSS"],
+    #["SSSS", None,   "PPMF", None,   None,   None,   None,   "SSSS"],
+    #["SSSS", "GRGS", None,   None,   None,   None,   "GFGS", "SSSS"],
+    #["SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS"]]
     lignes = len(plateau_vide)
     colonnes = len(plateau_vide[0])
     
