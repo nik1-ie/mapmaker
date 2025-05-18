@@ -1,18 +1,35 @@
 # Imports
-import globals
 import os
 import fltk
-from affichage import quadrillage, affichage_map 
+import random
+import time
+from affichage import quadrillage, affichage_map
 
+def recup_toutes_tuiles(tuiles="pack1/tuiles/"):
+    """
+    Récupère tous les noms de fichiers tuiles disponibles dans le dossier spécifié.
+    
+    Args:
+        tuiles (str): Chemin vers le dossier contenant les tuiles. Par défaut "pack1/tuiles/"
+        
+    Returns:
+        list: Liste des noms de fichiers sans extension (.png)
+    """
+    return [f[:-4] for f in os.listdir(tuiles) if f.endswith('.png')]
 
-# Conditions des tuiles aled
-def recup_toutes_tuiles(tiles_dir="pack1/tuiles/"):
-    """Récupère toutes les tuiles disponibles (noms sans extension)"""
-    return [f[:-4] for f in os.listdir(tiles_dir)]
-
+toutes_tuiles = recup_toutes_tuiles()
 
 def verifier_correspondance(tuile, modele):
-    """Vérifie si une tuile correspond au modèle (4 caractères avec ? pour joker)"""
+    """
+    Vérifie si une tuile correspond au modèle donné avec des jokers '?'.
+    
+    Args:
+        tuile (str): Nom de la tuile à vérifier (4 caractères)
+        modele (str): Modèle à comparer (peut contenir '?' comme joker)
+        
+    Returns:
+        bool: True si la tuile correspond au modèle, False sinon
+    """
     if len(tuile) != 4 or len(modele) != 4:
         return False
         
@@ -21,205 +38,221 @@ def verifier_correspondance(tuile, modele):
             return False
     return True
 
-
-def rechercher_tuiles(modele):
-    """Retourne TOUTES les tuiles correspondant au modèle sous forme de liste"""
-    tuiles_disponibles = recup_toutes_tuiles()
-    resultats = []
+def rechercher_tuiles(modele, lst_tuiles_dispo):
+    """
+    Filtre les tuiles disponibles selon un modèle donné.
     
-    for tuile in tuiles_disponibles:
-        if verifier_correspondance(tuile, modele):
-            resultats.append(tuile)
+    Args:
+        modele (str): Modèle de tuile recherché (peut contenir '?')
+        lst_tuiles_dispo (list): Liste des tuiles disponibles
+        
+    Returns:
+        list: Liste des tuiles correspondant au modèle
+    """
+    return [tuile for tuile in lst_tuiles_dispo if verifier_correspondance(tuile, modele)]
+
+def est_liste_de_none(lst_principale):
+    """
+    Vérifie si une liste 2D ne contient que des valeurs None.
     
-    return resultats
+    Args:
+        lst_principale (list): Liste de listes à vérifier
+        
+    Returns:
+        bool: True si tous les éléments sont None, False sinon
+    """
+    for sous_liste in lst_principale:
+        for element in sous_liste:
+            if element is not None:
+                return False
+    return True 
 
-
-#Autre
 def emplacement_valide(grille, i, j, nom_tuile):
-    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
-    dico = {0:2, 1: 3, 2: 0, 3: 1}
-    bon = True
-    for indice in range(len(directions)):
-        x = directions[indice][0]
-        y = directions[indice][1]
-        if grille[i + x][j + y][dico[indice]] == nom_tuile[indice]:
-            bon = True
-        else:
-            bon = False
-    return bon
+    """
+    Vérifie si une tuile peut être placée à la position donnée en respectant les voisins.
+    
+    Args:
+        grille (list): Grille des tuiles représentant la carte
+        i (int): Index de ligne
+        j (int): Index de colonne
+        nom_tuile (str): Nom de la tuile à placer
+        
+    Returns:
+        bool: True si le placement est valide, False sinon
+    """
+    directions = [(-1, 0, 2), (0, 1, 3), (1, 0, 0), (0, -1, 1)]  # (di, dj, index_opposé)
+    
+    for di, dj, opp in directions:
+        ni, nj = i + di, j + dj
+        if 0 <= ni < len(grille) and 0 <= nj < len(grille[0]):
+            if grille[ni][nj] is not None:
+                if grille[ni][nj][opp] != nom_tuile[directions.index((di, dj, opp))]:
+                    return False
+    return True
 
 def recup_nom(grille, i, j):
-    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
-    dico = {0:2, 1: 3, 2: 0, 3: 1}
-    nom = ""
-    for indice in range(len(directions)):
-        x = directions[indice][0]
-        y = directions[indice][1]
-
-        if 0 <= x + i <= len(grille)-1 and 0 <= j + y <= len(grille[0])-1:
-            if grille[i + x][j + y] is None:
-                nom += "?"
+    """
+    Génère le modèle de tuile requis pour une position basée sur les voisins.
+    
+    Args:
+        grille (list): Grille des tuiles représentant la carte
+        i (int): Index de ligne
+        j (int): Index de colonne
+        
+    Returns:
+        str: Modèle de tuile requis (contient '?' pour les cases vides/inconnues)
+    """
+    directions = [(-1, 0, 2), (0, 1, 3), (1, 0, 0), (0, -1, 1)] 
+    modele = []
+    
+    for di, dj, opp in directions:
+        ni, nj = i + di, j + dj
+        if 0 <= ni < len(grille) and 0 <= nj < len(grille[0]):
+            if grille[ni][nj] is not None:
+                modele.append(grille[ni][nj][opp])
             else:
-                nom += grille[i + x][j + y][dico[indice]]
-
-    return nom
-
-def recup_vide(grille):
-    #dico pour pouvoir recup les coords et le statut de la case vide (pour le récursif)
-    coord= []
-    for i in range(len(grille)):
-        for j in range(len(grille[i])):
-            if grille[i][j] is None:
-                coord.append((i,j))
-    return coord
-
-
-def solutions(coord_vide, plateau):
-    for elt in coord_vide:
-        print(recup_nom(plateau, elt[0],elt[1]))
-
-def solveur1(coord_vide):
-    for elt in coord_vide:
-        print(elt)
-        
-
-
-
-
-
-
-
-
-
-
-#Niki Core :
-def tuile_valide(grille, i, j, nom_tuile):
-    '''
-    Fonction vérifiant si l'emplacement de la tuile colle par rapport aux tuiles l'entourant.
-    Arguments : grille (list de list) - plateau représentant notre map
-                i, j (int) - position de la tuile à  vérifier
-                nom_tuile (str) - nom de notre tuile
-    Return : Booléen
-    '''
-    tuile_link  = {0:(-1, 0), 1:(0, 1), 2:(1, 0), 3:(0, -1)}
-
-    for v in range (2):
-        
-        x, y = i + tuile_link[v][0] , j + tuile_link[v][1] #the tuile we're lookin for
-        if i + tuile_link[v][0] >= len(grille):
-            x = i
-        elif j + tuile_link[v][1] <= len(grille[0]):
-            y = j
-
-        voisin = grille[x][y]
-        if voisin != None:
-            if nom_tuile[v] != voisin[v + 2]:
-                return False
-    return True
-
-def smart_pick(plateau, i, j, dir):
-    '''
-    Fonction choisissant la tuile PARFAITE dans la direction choisie
-    Arguments : plateau (list) - grille de tuiles
-                i, j (int) - position actuelle
-                dir (tuple) - direction recherchée
-    Return : tuile (str) - nom de tuile existante et qui valide les conditions
-    '''
-    x,y = dir
-    prec_tuile = plateau[i][j]
+                modele.append('?')
+        else:
+            modele.append('?')
     
-    if i+x > len(plateau) or j+y > len(plateau[0]): #Si la direction dans laquelle on veut aller est inexistante
-        print("This shouldn't happen.")
-        return prec_tuile
-    
-    # get connexion letter on the needed side. 
-    tuile_link  = {(-1, 0):0, (0, 1):1, (1, 0):2, (0, -1):3}
-    link_dir = tuile_link[dir] #id of the letter needed
-    link = plateau[i][j][link_dir] #the tuile connexion we need
-    print(globals.pack_1)
-    pack = globals.pack_1['pack1/tuiles']
-    copy = plateau.copy()
-    print("Copie : ", copy, "End copy")
-    for file in pack:
-        if file[link_dir] == link:
-            print("File matches!")
-            copy[i + dir[0]][j + dir [1]] = link
-            print("Edited copy", copy, "End edited copy")
-            if tuile_valide(copy, i, j, file):
-                print("File completly matches!")
-                return file
-            print("File does not match entirely.")
-    return None
+    return ''.join(modele)
 
-def verify_all(grille):
-    '''
-    Fonction vérifiant tout
-    '''
-    if None in grille:
-        return False
+def trouver_case_vide(grille):
+    """
+    Trouve la première case vide dans la grille (parcours ligne par ligne).
+    
+    Args:
+        grille (list): Grille  à parcourir
+        
+    Returns:
+        tuple: Coordonnées (i,j) de la première case vide trouvée, ou None
+    """
     for i in range(len(grille)):
         for j in range(len(grille[0])):
-            if emplacement_valide(grille, i ,j ,grille[i][j]) != True:
-                return False
-    return True
-        
+            if grille[i][j] is None:
+                return (i, j)
+    return None
 
-def solveur(plateau, i=0, j=0):
-    '''
-    Solveur automatique...Récursif of course
-    '''
-    # affichage_map(plateau, globals.lignes, globals.colonnes)
-    if verify_all(plateau): #Si tout est ok!!
-        return plateau
+def trouver_case_la_plus_contrainte(grille):
+    """
+    Trouve la case vide avec le moins de possibilités de tuiles .
     
-    if i == len(plateau) and j == len(plateau[0]): #Si t'es au bout du tableau sans avoir rien trouvé
-        return False
-    
-    #Make an if qui fait les nv i, j et trouve une direction pour smart pick (how would it even work...)
-    new_i, new_j = 0, 0
-    if j == len(plateau[0]):
-        new_i, new_j = i+1, 0
-        if plateau[new_i][new_j]==None:
-            print("Empty case, not normal!")
-        else:
-            print("On avance en x")
-            dir = (1, 0)
-    else:
-        new_i, new_j = i, j+1
-        if new_j == len(plateau[0]):
-            dir = (1, 0)
-        dir = (0, 1)
+    Args:
+        grille (list): Grille des truiles à analyser
         
-    plateau2 = plateau.copy()
-    plateau2[i + dir[0]][j + dir[1]]=smart_pick(plateau, i,j, dir)
+    Returns:
+        tuple: Coordonnées (i,j) de la case la plus contrainte, ou None
+    """
+    min_possibilites = float('inf')
+    meilleure_case = None
     
-    if solveur(plateau2, new_i, new_j):
+    for i in range(len(grille)):
+        for j in range(len(grille[0])):
+            if grille[i][j] is None:
+                modele = recup_nom(grille, i, j)
+                possibilites = len(rechercher_tuiles(modele, toutes_tuiles))
+                
+                if possibilites < min_possibilites:
+                    min_possibilites = possibilites
+                    meilleure_case = (i, j)
+                    if min_possibilites == 0:
+                        return meilleure_case
+    return meilleure_case
+
+def initialiser_bords_ile(grille):
+    """
+    Initialise les bords d'une grille avec des tuiles de mer ('SSSS') pour une île.
+    
+    Args:
+        grille (list): Grille des tuiles
+        
+    Returns:
+        list: Grille modifiée avec les bords remplis
+    """
+    for i in range(len(grille)):
+        for j in range(len(grille[0])):
+            if i == 0 or i == len(grille)-1 or j == 0 or j == len(grille[0])-1:
+                grille[i][j] = "SSSS"
+    return grille
+
+def solveur_recursif(grille, type_carte="ile", utilise_mdp=True):
+    """
+    Solveur récursif avec backtracking pour compléter la carte automatiquement.
+    
+    Args:
+        grille (list): Grille des tuiles  à compléter
+        type_carte (str): Type de carte ("ile" ou autre)
+        utilise_mdp (bool): Utilise la partie avec la case la plus contrainte
+        
+    Returns:
+        bool: True si une solution a été trouvée, False sinon
+    """
+    case_vide = trouver_case_la_plus_contrainte(grille) if utilise_mdp else trouver_case_vide(grille)
+    
+    if not case_vide:
         return True
-    solveur(plateau2, new_i, new_j)
-    return
+    
+    i, j = case_vide
+    
+    modele = recup_nom(grille, i, j)
+    tuiles_possibles = rechercher_tuiles(modele, toutes_tuiles)
+    random.shuffle(tuiles_possibles)
+    
+    for tuile in tuiles_possibles:
+        grille[i][j] = tuile
+        
+        if solveur_recursif(grille, type_carte, utilise_mdp):
+            return True
+            
+        grille[i][j] = None
+    
+    return False
 
+def completer_carte(grille, type_carte="ile", utilise_mdp=True):
+    """
+    Fonction principale pour compléter une carte selon le type spécifié.
+    
+    Args:
+        grille (list): Grille des tuiles à compléter (sera modifiée)
+        type_carte (str): Type de carte ("ile" ou autre)
+        utilise_mdp (bool): Utilise la partie avec la case la plus contrainte
+        
+    Returns:
+        bool: True si la carte a pu être complétée, False sinon
+    """
+    if type_carte == "ile":
+        grille = initialiser_bords_ile(grille)
+    
+    grille_copie = [ligne.copy() for ligne in grille]
+    
+    if solveur_recursif(grille_copie, type_carte, utilise_mdp):
+        for i in range(len(grille)):
+            grille[i] = grille_copie[i].copy()
+        return True
+    return False
 
-#TEST YIPIIII
 if __name__ == "__main__":
+    """
+    Point d'entrée principal du programme.
+    Initialise une fenêtre graphique et génère une carte.
+    """
     fltk.cree_fenetre(800, 800)
-    plateau = [['SSSS','SSSS','SSSS','SSSS', None],
-           ['SSSS','SHGS', 'SHRH', 'SHFH', None],
-           ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
-           ['SSSS', None, None, None, None],
-           [None, None, None, None, None]]
-
-    plateau_pasbon = [['SSSS','SSSS','SSSS','SSSS', None],
-           ['SSSS','SSDH', 'SHRH', 'SHFH', None],
-           ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
-           ['SSSS', None, None, None, None],
-           [None, None, None, None, None]]
-    lignes = len(plateau)
-    colonnes = len(plateau[0])
-    affichage_map(plateau, lignes, colonnes)
+    
+    plateau_vide = [[None for _ in range(10)] for _ in range(10)]
+    lignes = len(plateau_vide)
+    colonnes = len(plateau_vide[0])
+    
+    affichage_map(plateau_vide, lignes, colonnes)
     quadrillage(lignes, colonnes)
-    lst_cord_vide = recup_vide(plateau)
-    print(lst_cord_vide)
-    #print(recup_nom(plateau, 0, 4))
-    solutions(lst_cord_vide, plateau)
+    fltk.mise_a_jour()
+    
+    if completer_carte(plateau_vide, type_carte="ile"):
+        print("Carte complétée avec succès!")
+        time.sleep(1)
+        affichage_map(plateau_vide, lignes, colonnes)
+        quadrillage(lignes, colonnes)
+    else:
+        print("Aucune solution")
+    
     while True:
         fltk.mise_a_jour()
