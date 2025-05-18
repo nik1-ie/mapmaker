@@ -4,7 +4,7 @@ import fltk
 import random
 import time
 from affichage import quadrillage, affichage_map
-
+# Fonctions
 def recup_toutes_tuiles(tuiles="pack1/tuiles/"):
     """
     Récupère tous les noms de fichiers tuiles disponibles dans le dossier spécifié.
@@ -53,7 +53,7 @@ def rechercher_tuiles(modele, lst_tuiles_dispo):
 
 def est_liste_de_none(lst_principale):
     """
-    Vérifie si une liste 2D ne contient que des valeurs None.
+    Vérifie si une liste ne contient que des valeurs None.
     
     Args:
         lst_principale (list): Liste de listes à vérifier
@@ -248,6 +248,18 @@ if __name__ == "__main__":
     #["SSSS", None,   "PPMF", None,   None,   None,   None,   "SSSS"],
     #["SSSS", "GRGS", None,   None,   None,   None,   "GFGS", "SSSS"],
     #["SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS"]]
+    plateau = [['SSSS','SSSS','SSSS','SSSS', None],
+            ['SSSS','SHGS', 'SHRH', 'SHFH', None],
+            ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
+            ['SSSS', None, None, None, None],
+            [None, None, None, None, None]]
+
+    plateau_pasbon = [['SSSS','SSSS','SSSS','SSSS', None],
+            ['SSSS','SSDH', 'SHRH', 'SHFH', None],
+            ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
+            ['SSSS', None, None, None, None],
+            [None, None, None, None, None]]
+
     lignes = len(plateau_vide)
     colonnes = len(plateau_vide[0])
     
