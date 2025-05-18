@@ -127,6 +127,7 @@ class CustomCanvas:
         self.canvas.pack(fill=tk.BOTH, expand=tk.YES)
         self.root.resizable(width=resizing, height=resizing)
         self.canvas.focus_set()
+        self.canvas.config(cursor="none")
         self.first_resize = True
 
         # binding events
