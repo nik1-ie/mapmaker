@@ -1,10 +1,10 @@
 # --- Imports
 import fltk
 import globals
-import test_solveur
+import solveur
 # --- Constantes
 plateau = []
-lignes, colonnes = 0, 0
+lignes, colonnes = globals.lignes, globals.colonnes
 largeur, hauteur = 0, 0
 window = False
 option_id = 1
@@ -17,13 +17,13 @@ def quadrillage(lignes, colonnes):
     '''
     x = 0
     y = 0
-    fltk.ligne(0, 0, fltk.largeur_fenetre(), 0)
+    fltk.ligne(0, 0, fltk.largeur_fenetre(), 0, tag='quadrillage')
     for _ in range(lignes + 1):
-        fltk.ligne(0, y, fltk.largeur_fenetre(),y)
+        fltk.ligne(0, y, fltk.largeur_fenetre(),y, tag='quadrillage')
         y += fltk.hauteur_fenetre()/colonnes
 
     for _ in range(colonnes + 1):
-        fltk.ligne(x, 0, x, fltk.hauteur_fenetre())
+        fltk.ligne(x, 0, x, fltk.hauteur_fenetre(), tag='quadrillage')
         x += fltk.largeur_fenetre()/lignes
     fltk.mise_a_jour()
 
@@ -68,8 +68,8 @@ def options(pos):
     window = True
     
     yess = plateau
-    nom = test_solveur.recup_nom(yess, pos[0], pos[1])
-    option = test_solveur.rechercher_tuiles(nom)
+    nom = solveur.recup_nom(yess, pos[0], pos[1])
+    option = solveur.rechercher_tuiles(nom)
     option = options_tab(option)
     popup_width = largeur - 100
     popup_height = hauteur - 100
@@ -78,8 +78,8 @@ def options(pos):
     x2 = x1 + popup_width
     y2 = y1 + popup_height
 
-    fltk.rectangle(x1, y1, x2, y2, remplissage='#FFFFFF', epaisseur=2, couleur='#000000')
-    fltk.texte((x1 + x2) // 2, y1 + 20, "Tuiles possibles", ancrage='center', taille=16, couleur='#000000')
+    fltk.rectangle(x1, y1, x2, y2, remplissage='#FFFFFF', epaisseur=2, couleur='#000000', tag="popup")
+    fltk.texte((x1 + x2) // 2, y1 + 20, "Tuiles possibles", ancrage='center', taille=16, couleur='#000000', tag='popup')
 
     def affiche():
         print("AFFIIIICHE")
@@ -102,6 +102,7 @@ def options(pos):
                 if y_tuile + tuile_height > y2:
                     break
                 fltk.image(x_tuile, y_tuile, f"{chemin}{tuile}.png", largeur=tuile_width, hauteur=tuile_height, ancrage='nw', tag="choix")
+                
                 # Ajoute les coordonnées des coins de chaque image dans coords
                 coords.append([
                     (x_tuile, x_tuile + tuile_width), # coord de x
@@ -113,11 +114,13 @@ def options(pos):
     c = affiche()
 
     while True:
-        tev = fltk.donne_ev()
+        tev = fltk.attend_ev()
         ev = fltk.type_ev(tev) #works when we replace donne_ev by attend_ev.
-        if ev == "Clic_gauche":
-            x, y = fltk.abscisse_souris(), fltk.ordonnee_souris()
+        print(f"Evenement {ev}")
+        if ev == "ClicGauche":
+            x, y = fltk.abscisse(tev), fltk.ordonnee(tev)
             for idx, ((x_min, x_max), (y_min, y_max)) in enumerate(c): #look for where the clic is. if not on any tuile, ignores.
+                print("Pose de tuile . . .")
                 if x_min <= x <= x_max and y_min <= y <= y_max:
                     # Trouver la tuile correspondante
                     tuile = None
@@ -129,24 +132,35 @@ def options(pos):
                                 break
                             count += 1
                         if tuile is not None:
+                            fltk.efface("choix")
+                            fltk.efface("popup")
                             return tuile #on return la tuile choisie normalement T-T
-                    
-        elif ev == "Enter":
-            # fltk.efface("choix")
-            c = affiche()
-        elif ev == "Escape":
-            window = False
+        elif ev == "Touche":
+            touche_ev = fltk.touche(tev)
+            print(f"Toucheeee {touche_ev}")      
+            if touche_ev == "Enter":
+                print("Enter")
+                fltk.efface("choix")
+                c = affiche()
+            elif touche_ev == "Escape":
+                fltk.efface("choix")
+                fltk.efface("popup")
+                window = False
+                break
+            elif touche_ev == "Down":
+                option_id += 1
+                fltk.efface("choix")
+                c = affiche()
+            elif touche_ev == "Up":
+                option_id -= 1
+                fltk.efface("choix")
+                c = affiche()
+        elif ev == "Quitte":
             break
-        elif ev == "Down":
-            option_id += 1
-            # fltk.efface("choix")
-            c = affiche()
-        elif ev == "Up":
-            option_id -= 1
-            # fltk.efface("choix")
-            c = affiche()
-    return
-
+        fltk.mise_a_jour()
+        fltk.attend_ev()
+        
+        
 def main():
     global plateau, lignes, colonnes, hauteur, largeur
     hauteur, largeur = fltk.hauteur_fenetre(), fltk.largeur_fenetre()
@@ -168,27 +182,18 @@ def main():
                 abs = fltk.abscisse(ev)
                 ord = fltk.ordonnee(ev)
                 coord_clic = (abs//larg, ord//haut)
-                if plateau[coord_clic[0]][coord_clic[1]] != None:
-                    plateau[coord_clic[0], coord_clic[1]] = None
+                if plateau[coord_clic[1]][coord_clic[0]] != None:
+                    plateau[coord_clic[1]][coord_clic[0]] = None
                 else:
                     t = options(coord_clic)
-                    plateau[coord_clic[0], coord_clic[1]] = t #on met la tuile
+                    plateau[coord_clic[1]][coord_clic[0]] = t #on met la tuile
+                affichage_map(plateau, lignes, colonnes)
+                quadrillage(lignes, colonnes)
                 print(coord_clic)
                     
             fltk.mise_a_jour()
 
 
 if __name__ == "__main__":
-    fltk.cree_fenetre(800, 800)
+    fltk.cree_fenetre(globals.hauteur_fenetre, globals.largeur_fenetre)
     main()
-    plateau = [['SSSS','SSSS','SSSS','SSSS', None],
-            ['SSSS','SHGS', 'SHRH', 'SHFH', None],
-            ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
-            ['SSSS', None, None, None, None],
-            [None, None, None, None, None]]
-
-    plateau_pasbon = [['SSSS','SSSS','SSSS','SSSS', None],
-            ['SSSS','SSDH', 'SHRH', 'SHFH', None],
-            ['SSSS', None, 'RMPP', 'FMMM', 'PPMM'],
-            ['SSSS', None, None, None, None],
-            [None, None, None, None, None]]# pour tester avec un plateau qui n'existe pas
