@@ -1,10 +1,10 @@
-# Imports
+# --- Imports
 import os
 import fltk
 import random
 import time
 from affichage import quadrillage, affichage_map
-
+# --- Fonctions 
 def recup_toutes_tuiles(tuiles="pack1/tuiles/"):
     """
     Récupère tous les noms de fichiers tuiles disponibles dans le dossier spécifié.
@@ -239,15 +239,6 @@ if __name__ == "__main__":
     fltk.cree_fenetre(800, 800)
     
     plateau_vide = [[None for _ in range(10)] for _ in range(10)]
-    #plateau_vide = [
-    #["SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS"],
-    #["SSSS", "SHGS", None,   None,   None,   None,   "SHPH", "SSSS"],
-    #["SSSS", None,   "FMMM", "PPMM", None,   "RMPP", None,   "SSSS"],
-    #["SSSS", None,   "PPPF", None,   "GFGS", None,   None,   "SSSS"],
-    #["SSSS", None,   None,   "PBDP", None,   None,   None,   "SSSS"],
-    #["SSSS", None,   "PPMF", None,   None,   None,   None,   "SSSS"],
-    #["SSSS", "GRGS", None,   None,   None,   None,   "GFGS", "SSSS"],
-    #["SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS"]]
     lignes = len(plateau_vide)
     colonnes = len(plateau_vide[0])
     
