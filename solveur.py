@@ -1,10 +1,10 @@
-# --- Imports
+# Imports
 import os
 import fltk
 import random
 import time
 from affichage import quadrillage, affichage_map
-# --- Fonctions 
+# Fonctions
 def recup_toutes_tuiles(tuiles="pack1/tuiles/"):
     """
     Récupère tous les noms de fichiers tuiles disponibles dans le dossier spécifié.
@@ -231,6 +231,61 @@ def completer_carte(grille, type_carte="ile", utilise_mdp=True):
         return True
     return False
 
+
+def ajout_decors(grille, decors_terre="pack1/decors/terre", decors_mer="pack1/decors/mer"):
+    """
+    Ajoute aléatoirement des décors sur les tuiles de plaines ('P') et de mer ('SSSS') dans la grille.
+    Pour les tuiles contenant plusieurs plaines, place un décor à une position spécifique en fonction
+    des emplacements des 'P' dans le nom de la tuile. Pour les tuiles de mer, place occasionnellement
+    un décor maritime au centre de la tuile.
+
+    Args:
+        grille (list): Grille 2D représentant la carte, chaque élément est une chaîne de 4 caractères
+                      décrivant les biomes ou 'SSSS' pour la mer.
+        decors_terre (str): Chemin vers le dossier contenant les images de décors terrestres.
+                           Par défaut "pack1/decors/terre".
+        decors_mer (str): Chemin vers le dossier contenant les images de décors maritimes.
+                         Par défaut "pack1/decors/mer".
+
+    Returns:
+        None: La fonction affiche directement les décors via fltk mais ne retourne rien.
+    """
+    decors_terre = [f for f in os.listdir(decors_terre)]
+    decors_mer = [f for f in os.listdir(decors_mer)]
+    largeur = fltk.largeur_fenetre()
+    hauteur = fltk.hauteur_fenetre()
+    chemin = 'pack1/decors/'
+    dico_pos = {(0,3):(0,0,'nw'), (0,1):(largeur/lignes, 0,'ne'), (0,2):(0,hauteur/colonnes,'sw'),(1,2):(largeur/lignes,hauteur/colonnes,'se'),(2,3):(0,hauteur/colonnes,'sw'), (1,3): (0,hauteur/colonnes/2,'w')}
+    for i in range(len(grille)):
+        for j in range(len(grille[i])):
+
+            if grille[i][j].count('P') > 1:
+
+                alea = random.randint(1, 2)
+                if alea == 1:
+                    positions_p = [pos for pos, char in enumerate(grille[i][j]) if char == 'P']
+                    pre,deu = positions_p[0],positions_p[1]
+                    image = random.choice(decors_terre)
+                    fltk.image(j * (largeur / len(grille[0])) + dico_pos[(pre,deu)][0], 
+                             i * (hauteur / len(grille)) +dico_pos[(pre,deu)][1], chemin + 'terre/' + image,
+                                 largeur=int((largeur // len(grille[0])) * 0.23), 
+                                 hauteur=int((hauteur // len(grille)) * 0.23), 
+                                 ancrage=dico_pos[(pre,deu)][2])
+            
+
+            elif 'SSSS' == grille[i][j]:
+                alea = random.randint(1, 5)
+                if alea == 1:
+                    image = random.choice(decors_mer)
+                    fltk.image(j * (largeur / len(grille[0])) + (largeur / len(grille[0])) / 2, 
+                             i * (hauteur / len(grille)) + (hauteur / len(grille)) / 2, 
+                             chemin + 'mer/' + image, 
+                             largeur=int((largeur // len(grille[0])) * 0.5), 
+                             hauteur=int((hauteur // len(grille)) * 0.5), 
+                             ancrage='center')
+
+
+
 if __name__ == "__main__":
     """
     Point d'entrée principal du programme.
@@ -239,15 +294,6 @@ if __name__ == "__main__":
     fltk.cree_fenetre(800, 800)
     
     plateau_vide = [[None for _ in range(10)] for _ in range(10)]
-    #plateau_vide = [
-    #["SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS"],
-    #["SSSS", "SHGS", None,   None,   None,   None,   "SHPH", "SSSS"],
-    #["SSSS", None,   "FMMM", "PPMM", None,   "RMPP", None,   "SSSS"],
-    #["SSSS", None,   "PPPF", None,   "GFGS", None,   None,   "SSSS"],
-    #["SSSS", None,   None,   "PBDP", None,   None,   None,   "SSSS"],
-    #["SSSS", None,   "PPMF", None,   None,   None,   None,   "SSSS"],
-    #["SSSS", "GRGS", None,   None,   None,   None,   "GFGS", "SSSS"],
-    #["SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS"]]
     lignes = len(plateau_vide)
     colonnes = len(plateau_vide[0])
     
@@ -260,6 +306,7 @@ if __name__ == "__main__":
         print("Carte complétée avec succès!")
         time.sleep(1)
         affichage_map(plateau_vide, lignes, colonnes)
+        ajout_decors(plateau_vide)
         quadrillage(lignes, colonnes)
     else:
         fltk.rectangle(0, 0, fltk.largeur_fenetre(), fltk.hauteur_fenetre(), remplissage='white')
