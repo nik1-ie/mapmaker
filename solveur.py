@@ -239,19 +239,32 @@ if __name__ == "__main__":
     fltk.cree_fenetre(800, 800)
     
     plateau_vide = [[None for _ in range(10)] for _ in range(10)]
+    #plateau_vide = [
+    #["SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS"],
+    #["SSSS", "SHGS", None,   None,   None,   None,   "SHPH", "SSSS"],
+    #["SSSS", None,   "FMMM", "PPMM", None,   "RMPP", None,   "SSSS"],
+    #["SSSS", None,   "PPPF", None,   "GFGS", None,   None,   "SSSS"],
+    #["SSSS", None,   None,   "PBDP", None,   None,   None,   "SSSS"],
+    #["SSSS", None,   "PPMF", None,   None,   None,   None,   "SSSS"],
+    #["SSSS", "GRGS", None,   None,   None,   None,   "GFGS", "SSSS"],
+    #["SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS", "SSSS"]]
     lignes = len(plateau_vide)
     colonnes = len(plateau_vide[0])
     
     affichage_map(plateau_vide, lignes, colonnes)
     quadrillage(lignes, colonnes)
+    time.sleep(2)
     fltk.mise_a_jour()
     
-    if completer_carte(plateau_vide, type_carte="ile"):
+    if completer_carte(plateau_vide, "ile"):
         print("Carte complétée avec succès!")
         time.sleep(1)
         affichage_map(plateau_vide, lignes, colonnes)
         quadrillage(lignes, colonnes)
     else:
+        fltk.rectangle(0, 0, fltk.largeur_fenetre(), fltk.hauteur_fenetre(), remplissage='white')
+        fltk.texte(fltk.largeur_fenetre()/2, fltk.hauteur_fenetre()/2, "Aucune solution possible:", ancrage='center')
+        fltk.mise_a_jour()
         print("Aucune solution")
     
     while True:
