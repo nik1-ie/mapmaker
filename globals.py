@@ -36,7 +36,7 @@ POLICE_PIXEL = "Fixedsys"
 
 etiquettes = [
     ("⭐", "nouvelle carte"),
-    ("", "charger carte"),
+    ("", "sauvegarde"),
     ("⭐", "modèles"),
     ("", "explorer cartes"),
     ("⭐", "paramètres"),
