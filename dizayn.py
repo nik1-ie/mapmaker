@@ -1,5 +1,6 @@
 import fltk
 import random
+import sauvegarde
 from globals import *
 from utilitaires import dessiner_curseur_souris, mise_a_jour_avec_curseur, rectangle_arrondi, initialiser_gouttes, bouton_clique
 
@@ -136,6 +137,10 @@ def menu():
                     elif etiquettes[bouton][1] == "explorer cartes":
                         from graphique import afficher_galerie_captures
                         afficher_galerie_captures()
+                    elif etiquettes[bouton][1] == "sauvegarde":
+                        fltk.efface_tout()
+                        sauvegarde.save()
+                        break
             elif tev == "Quitte":
                 return "quitter"
         
