@@ -48,10 +48,9 @@ def dico_to_lst(dico):
 
 def lst_to_dico(lst):
     dico = {}
-    for i, row in enumerate(lst):
-        for j, elt in enumerate(row):
-            if elt is not None:
-                dico[(i, j)] = elt
+    for i in range(len(lst)):
+        for j in range(len(lst[0])):
+            dico[(i,j)] = lst[i][j]
     return dico
 
 def options(pos):

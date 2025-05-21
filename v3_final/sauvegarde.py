@@ -10,8 +10,6 @@ from graphique_utils import dessiner_curseur_souris, mise_a_jour_avec_curseur, r
 from utilitaires import initialiser_gouttes, bouton_clique
 import file_reading
 import tuiles_gestion
-# --- Constantes
-saved = file_reading.get_files('saved')
 # --- Fonctions
 
 
@@ -23,8 +21,6 @@ def save_pnj(name, map=""):
     
     '''
     #Sauvegarde en fichier texte pour éventuellement pouvoir charger le fichier plus tard
-    if map == None:
-        map = " "
     fichier = open(f"{name}.txt", 'x')
     fichier.write(str(map))
     fichier.close()
@@ -94,6 +90,7 @@ def save(map = None):
     ]
     
     while True:
+        saved = file_reading.get_files('saved')
         file_coords = []
         fltk.efface_tout()
         fltk.image(LARGEUR_FENETRE//2, HAUTEUR_FENETRE//2, "icons/arbre1.png", largeur=LARGEUR_FENETRE, hauteur=HAUTEUR_FENETRE, ancrage="center")
@@ -166,17 +163,10 @@ def save(map = None):
         # Calcule la position y juste en dessous du dernier bouton
         y_fichiers = y_debut + 3 * (hauteur_bouton + espacement) + 10
         for idx, nom_fichier in enumerate(saved):
-            # 
             fltk.texte(x_menu + largeur_menu // 2, y_fichiers + idx *28 , nom_fichier, couleur=COUL_MENU_CONTOUR_MOYEN,  police=POLICE_PIXEL, taille=20, ancrage="n")
             file_coords.append([(x_menu + largeur_menu // 2,y_fichiers + idx *28)])
 
-
-
-        #  filex, fily = file_coords
-        #     rectangle_arrondi(selection[0], selection[1], hauteur_bouton, largeur_bouton,10, COUL_MENU_CONTOUR_MOYEN, COUL_BOUTON_SURVOL, 2)
-            
         dessiner_curseur_souris()
-
 
         ev = fltk.donne_ev()
         if ev is not None:

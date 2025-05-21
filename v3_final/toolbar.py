@@ -3,6 +3,8 @@ import globals
 import history
 import graphique_utils
 import actions
+import sauvegarde
+import tuiles_gestion
 
 def gerer_clic_barre_outils(x, y):
     """
@@ -39,7 +41,7 @@ def gerer_clic_barre_outils(x, y):
             return True
 
     outils_droite = [
-        "zoom_plus", "zoom_moins", "grille", "centrer", "plein_ecran", "mini_carte", "capture"
+        "zoom_plus", "zoom_moins", "grille", "centrer", "sauvegarde", "mini_carte", "capture"
     ]
     
     x_debut = milieu + 10
@@ -57,9 +59,9 @@ def gerer_clic_barre_outils(x, y):
                 globals.afficher_grille = not globals.afficher_grille
             elif action == "centrer":
                 globals.pan_x, globals.pan_y = 0, 0
-            elif action == "plein_ecran":
-                globals.plein_ecran = not globals.plein_ecran
-                graphique_utils.basculer_plein_ecran()
+            elif action == "sauvegarde":
+                lst, x, y = tuiles_gestion.dico_to_lst(globals.cases_remplies)
+                sauvegarde.save(lst)
             elif action == "mini_carte":
                 globals.mini_carte_active = not globals.mini_carte_active
             elif action == "capture":
