@@ -142,7 +142,7 @@ def menu():
                     elif etiquettes[bouton][1] == "explorer cartes":
                         from actions import afficher_galerie_captures
                         afficher_galerie_captures()
-                    elif etiquette[bouton][1] == "charger carte":
+                    elif etiquettes[bouton][1] == "charger carte":
                         return "sauvegarde"
             elif tev == "Quitte":
                 return "quitter"

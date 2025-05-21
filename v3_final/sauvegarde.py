@@ -3,16 +3,15 @@
 # --- Import
 import fltk
 import random
-import numpy as np
-from PIL import Image
+import ast
 import shutil, os
 from globals import *
 from graphique_utils import dessiner_curseur_souris, mise_a_jour_avec_curseur, rectangle_arrondi
 from utilitaires import initialiser_gouttes, bouton_clique
 import file_reading
+import tuiles_gestion
 # --- Constantes
 saved = file_reading.get_files('saved')
-selection = None
 # --- Fonctions
 
 
@@ -30,8 +29,6 @@ def save_pnj(name, map=""):
     fichier.write(str(map))
     fichier.close()
     shutil.move(f'{name}.txt',f'saved\{name}.txt')
-    
-    
     return
 
 def typing_bar(x1, y1, x2, y2):
@@ -73,11 +70,13 @@ def get_content(file):
     '''
     Fonction recevant un nom de fichier et return le tableau de la carte contenue.
     Argument : file (str) - nom de fichier
-    Return : carte (list) - 
+    Return : carte (dico) - dico représentant la map
     '''
-    file = open(f"saved/{file}.png",'r')
+    file = open(f"saved/{file}.txt",'r')
     carte = file.read()
-    print(carte)
+    file.close()
+    carte = ast.literal_eval(carte)
+    carte = tuiles_gestion.lst_to_dico(carte)
     return carte
 
 def save(map = None):
@@ -85,6 +84,7 @@ def save(map = None):
     Affiche le menu de sauvegarde
     Argument : map (list) - carte créée a éventuellement enregistrer.
     '''
+    global selection
     fltk.redimensionne_fenetre(LARGEUR_FENETRE, HAUTEUR_FENETRE)
     gouttes = initialiser_gouttes(NB_GOUTTES)
     boutons = [
@@ -163,12 +163,18 @@ def save(map = None):
                 barx, bary = x_bouton , y_bouton
                 barx_end, bary_end = barx + largeur_bouton, bary + hauteur_bouton
 
-            # Calcule la position y juste en dessous du dernier bouton
+        # Calcule la position y juste en dessous du dernier bouton
         y_fichiers = y_debut + 3 * (hauteur_bouton + espacement) + 10
         for idx, nom_fichier in enumerate(saved):
+            # 
             fltk.texte(x_menu + largeur_menu // 2, y_fichiers + idx *28 , nom_fichier, couleur=COUL_MENU_CONTOUR_MOYEN,  police=POLICE_PIXEL, taille=20, ancrage="n")
             file_coords.append([(x_menu + largeur_menu // 2,y_fichiers + idx *28)])
 
+
+
+        #  filex, fily = file_coords
+        #     rectangle_arrondi(selection[0], selection[1], hauteur_bouton, largeur_bouton,10, COUL_MENU_CONTOUR_MOYEN, COUL_BOUTON_SURVOL, 2)
+            
         dessiner_curseur_souris()
 
 
@@ -178,25 +184,18 @@ def save(map = None):
             if tev == "ClicGauche":
                 x, y = fltk.abscisse(ev), fltk.ordonnee(ev)
                 bouton = bouton_clique(x, y, x_bouton, y_debut, largeur_bouton, hauteur_bouton, espacement, NB_BOUTONS)
-                print(bouton)
                 if bouton == 0:
                     file = typing_bar(barx, bary, barx_end, bary_end)
                     save_pnj(file, map)
-                    print("Type")
-                elif bouton == 2:
-                    print("Charger")
                 # Détection des clics sur les fichiers affichés
                 for idx, coords_list in enumerate(file_coords):
                     for (fx, fy) in coords_list:
                         # On considère une zone autour du texte, par exemple 100x24 px centrée sur (fx, fy)
-                        if fx - 50 <= x <= fx + 50 and fy <= y <= fy + 24:
-                            print(f"Fichier sélectionné : {saved[idx]}")
-                            return "charger  carte", saved[idx]
+                        if fx - largeur_bouton//2 <= x <= fx + largeur_bouton//2  and fy - hauteur_bouton <= y <= fy + hauteur_bouton:
+                            content = get_content(saved[idx])
+                            return "charger  carte", content
             elif tev == "Quitte":
-                import dizayn
-                fltk.efface_tout
-                dizayn.menu()
-                break
+                return "menu"
                 
         mise_a_jour_avec_curseur()
         fltk.attente(0.01)

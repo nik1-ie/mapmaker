@@ -18,7 +18,6 @@ def initialiser():
     global facteur_zoom, pan_x, pan_y, mode_actuel
     globals.facteur_zoom = 1.0
     globals.pan_x, globals.pan_y = 0, 0
-    globals.cases_remplies.clear()
     globals.window = False
     globals.afficher_grille = True
     globals.mode_actuel = "ajouter"
@@ -29,6 +28,29 @@ def initialiser():
     globals.selection_fin = None
     globals.lignes = 12
     globals.colonnes = 16
+    # if globals.cases_remplies == {}:
+    #     globals.cases_remplies.clear()
+    # else:
+    #     continue
+
+def resize(plateau, l ,c):
+    '''
+    Fonction prenant une map en la mettant à jour à la taille souhaitée.
+    Arguments : plateau (lst) - liste de liste
+               l, c (int) - taille de ligne et colonne souhaitée
+    Return : plateau (lst) - plateau mis à jour
+    '''
+    while len(plateau) < l:
+        plateau.append([None for _ in range(c)])
+    for i in range(len(plateau)):
+        while len(plateau[i]) < c:
+            plateau[i].append(None)
+    for i in range(len(plateau)):
+        if len(plateau[i]) > c:
+            plateau[i] = plateau[i][:c]
+    if len(plateau) > l:
+        plateau = plateau[:l]
+    return plateau
 
 def main():
     """
@@ -83,6 +105,7 @@ def main():
                     min_x = min_y = 0
 
                 plateau, min_x, min_y = tuiles_gestion.dico_to_lst(globals.cases_remplies)
+                    
                 lignes = len(plateau)
                 colonnes = len(plateau[0]) if plateau else 0
                 affichage.dessiner_carte(

@@ -46,6 +46,13 @@ def dico_to_lst(dico):
         lst[x - min_x][y - min_y] = value
     return lst, min_x, min_y
 
+def lst_to_dico(lst):
+    dico = {}
+    for i, row in enumerate(lst):
+        for j, elt in enumerate(row):
+            if elt is not None:
+                dico[(i, j)] = elt
+    return dico
 
 def options(pos):
     """
