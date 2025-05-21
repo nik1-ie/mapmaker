@@ -1,0 +1,1 @@
+[['RPGB', 'PFPP', 'PPPF', 'FFFP', 'MPFF'], ['GMGS', 'PPPM', 'PFPP', 'FMPF', 'FMMM'], ['GPGS', 'PMPP', 'PPRM', 'PFMP', 'MMFF'], ['GRRH', 'PMMR', 'RPPM', 'MMRP', 'FFMM'], ['RPGB', 'MPFP', 'PBDP', 'RPGB', 'MPPP']]
