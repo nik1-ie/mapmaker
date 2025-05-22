@@ -1,0 +1,1 @@
+[['PPGB', 'DSDP', 'SSSS', 'SHGS', 'GRRH', 'PBDR', 'PBSB'], ['GRGS', 'DHRR', 'SHRH', 'GPRH', 'RPRP', 'DSDP', 'SSSS'], ['GBDH', 'RPGB', 'RBDP', 'RRGB', 'RBDR', 'DHGB', 'SHFH'], ['DHRR', 'GRPH', 'DSDR', 'GPGS', 'DSDP', 'GFGS', 'FFPF'], ['RMPP', 'PRMM', 'DSDR', 'GBSS', 'DHGB', 'GRPH', 'PMPR']]
