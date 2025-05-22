@@ -5,6 +5,7 @@ import tuiles_gestion
 import history
 import affichage
 import actions
+import music
 
 selection_rectangle = None
 debut_selection = None
@@ -28,17 +29,13 @@ def initialiser():
     globals.selection_fin = None
     globals.lignes = 12
     globals.colonnes = 16
-    # if globals.cases_remplies == {}:
-    #     globals.cases_remplies.clear()
-    # else:
-    #     continue
 
 def resize(plateau, l ,c):
     '''
     Fonction prenant une map en la mettant à jour à la taille souhaitée.
-    Arguments : plateau (lst) - liste de liste
+    Arguments: plateau (lst) - liste de liste
                l, c (int) - taille de ligne et colonne souhaitée
-    Return : plateau (lst) - plateau mis à jour
+    Return: plateau (lst) - plateau mis à jour
     '''
     while len(plateau) < l:
         plateau.append([None for _ in range(c)])
@@ -92,6 +89,8 @@ def main():
                 elif touche == 'y':
                     history.refaire()
                     globals.besoin_redessiner = True
+            elif fltk.type_ev(ev) == 'Redimension':
+                globals.besoin_redessiner = True
             elif fltk.type_ev(ev) == 'Quitte':
                 return "quitter"
 

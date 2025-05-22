@@ -7,6 +7,7 @@ import history
 from tuiles_gestion import options
 from toolbar import gerer_clic_barre_outils
 import file_reading
+import music
 
 def dessiner_selection():
     """
@@ -82,7 +83,8 @@ def capture_ecran():
     taille_case = globals.TAILLE_CASE_BASE
     img = Image.new("RGBA", (colonnes * taille_case, lignes * taille_case), (244, 226, 189, 255))
     for (i, j), nom_tuile in globals.cases_remplies.items():
-        chemin = f"./pack1/tuiles/{nom_tuile}.png"
+        chemin = globals.chemin_de_tuiles + f"{nom_tuile}.png"
+
         try:
             tuile = Image.open(chemin).convert("RGBA").resize((taille_case, taille_case), Image.NEAREST)
             img.paste(tuile, (j * taille_case, i * taille_case), mask=tuile)
@@ -126,6 +128,7 @@ def afficher_galerie_captures():
         if ev:
             t = fltk.type_ev(ev)
             if t == "ClicGauche":
+                music.play_click_sound(globals.click_1)
                 x, y = fltk.abscisse(ev), fltk.ordonnee(ev)
                 if x < 120:
                     idx = (idx - 1) % len(fichiers)
@@ -153,15 +156,13 @@ def gerer_clic(x, y):
 
     if y < globals.HAUTEUR_BARRE_OUTILS:
         return False
-
-
-
+    
+    music.play_click_sound(globals.click_2)
     y_ajuste = y - globals.HAUTEUR_BARRE_OUTILS
     taille_case = graphique_utils.actualiser_taille_case()
     colonne = (x + globals.pan_x) // taille_case
     ligne = (y_ajuste + globals.pan_y) // taille_case
     pos = (ligne, colonne)
-
 
     if ligne >= globals.lignes:
         globals.lignes = ligne + 1
@@ -172,6 +173,7 @@ def gerer_clic(x, y):
         avant = globals.cases_remplies.get(pos, None)
         nouvelle_tuile = options(pos)
         if nouvelle_tuile:
+            music.play_click_sound(globals.click_2)  
             history.ajouter_action('ajouter',
                 {'position': pos, 'tuile': avant},
                 {'position': pos, 'tuile': nouvelle_tuile}
@@ -181,6 +183,7 @@ def gerer_clic(x, y):
 
     elif globals.mode_actuel == "supprimer":
         if pos in globals.cases_remplies:
+            music.play_click_sound(globals.click_2)  
             avant = globals.cases_remplies[pos]
             history.ajouter_action('supprimer',
                 {'position': pos, 'tuile': avant},
@@ -193,6 +196,7 @@ def gerer_clic(x, y):
         avant = globals.cases_remplies.get(pos, None)
         nouvelle_tuile = options(pos)
         if nouvelle_tuile:
+            music.play_click_sound(globals.click_2) 
             history.ajouter_action('remplacer',
                 {'position': pos, 'tuile': avant},
                 {'position': pos, 'tuile': nouvelle_tuile}
@@ -202,15 +206,18 @@ def gerer_clic(x, y):
 
     elif globals.mode_actuel == "remplir":
         if not globals.selection_en_cours:
+            music.play_click_sound(globals.click_2)  
             globals.selection_debut = (ligne, colonne)
             globals.selection_en_cours = True
         else:
+            music.play_click_sound(globals.click_2) 
             globals.selection_fin = (ligne, colonne)
             remplir_zone_selection()
             globals.selection_debut = None
             globals.selection_fin = None
             globals.selection_en_cours = False
         return True
+
     elif globals.mode_actuel == "selectionner":
         plateau = [[None for _ in range(globals.colonnes)] for _ in range(globals.lignes)]
         for (i, j), chemin_tuile in globals.cases_remplies.items():
@@ -221,6 +228,7 @@ def gerer_clic(x, y):
         success = solveur.completer_carte(plateau, type_carte="ile", utilise_mdp=True)
 
         if success:
+            music.play_click_sound(globals.click_2)  
             etat_apres = {}
             for i in range(globals.lignes):
                 for j in range(globals.colonnes):
@@ -233,6 +241,7 @@ def gerer_clic(x, y):
             history.ajouter_action('selectionner', {'cases': etat_avant}, {'cases': etat_apres})
             globals.besoin_redessiner = True
         else:
+            music.play_click_sound(globals.click_3)
             print("Impossible de compléter la carte avec les tuiles actuelles.")
-    
+
 

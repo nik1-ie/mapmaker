@@ -9,8 +9,14 @@ colonnes = 10
 lignes = 10
 NB_GOUTTES = 50
 pack_1 = file_reading.file_dico('pack1')
-pack1_way = f'pack1/tuiles/'
+chemin_de_tuiles = 'pack1/tuiles/'
 
+# --- Paramètres audio ---
+musique_1 = "audio/background1.mp3"
+musique_2 = "audio/background2.mp3"
+click_1 = "audio/click_menu.wav"
+click_2 = "audio/click_basique.wav"
+click_3 = "audio/click3.wav"
 # --- Dimensions de la fenêtre et de l'écran ---
 HAUTEUR_BARRE_OUTILS = 60
 HAUTEUR_BOUTON = 50
@@ -56,15 +62,15 @@ COULEUR_TEXTE_BOUTON = "#5E4B35"
 ICONS = {
     "ajouter": "./icons/add.png",
     "annuler": "./icons/previous.png",
-    "capture": "./icons/photo-size.png",
-    "centrer": "./icons/minimize.png",
-    "grille": "./icons/computer.png",
+    "capture": "./icons/world.png",
+    "centrer": "./icons/sun.png",
+    "grille": "./icons/trash.png",
     "mini_carte": "./icons/search.png",
-    "plein_ecran": "./icons/maximize.png",
+    "plein_ecran": "./icons/save.png",
     "refaire": "./icons/next-icon.png",
-    "remplacer": "./icons/love.png",
-    "remplir": "./icons/camera.png",
-    "selectionner": "./icons/maximize (1).png",
+    "remplacer": "./icons/cat.png",
+    "remplir": "./icons/alien.png",
+    "selectionner": "./icons/love.png",
     "supprimer": "./icons/subtract.png",
     "zoom_moins": "./icons/zoom-out.png",
     "zoom_plus": "./icons/zoom-in.png",
@@ -86,6 +92,7 @@ POLICE_PIXEL = "Fixedsys"
 afficher_grille = True
 besoin_redessiner = False
 cases_remplies = {}
+cases_decors = {}
 facteur_zoom = 1.0
 historique_actions = []
 mini_carte_active = False

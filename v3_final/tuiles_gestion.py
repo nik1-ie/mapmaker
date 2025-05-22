@@ -3,6 +3,7 @@ import globals
 import solveur
 import graphique_utils
 import file_reading
+import music
 
 def bords_sont_mer_ou_vides(plateau):
     """
@@ -60,6 +61,7 @@ def options(pos):
     globals.window = True
     
     chemin = file_reading.trouver_chemin_pack()
+    toutes_tuiles = solveur.recup_toutes_tuiles(chemin)
 
     if type(chemin) == str and chemin[-1:] not in ('/', '\\'):
         chemin += '/'
@@ -76,8 +78,10 @@ def options(pos):
 
     
 
+
+    toutes_tuiles = solveur.recup_toutes_tuiles()
     tuiles_compatibles = [
-        tuile for tuile in solveur.rechercher_tuiles(nom_modele, solveur.toutes_tuiles)
+        tuile for tuile in solveur.rechercher_tuiles(nom_modele, toutes_tuiles)
         if solveur.emplacement_valide(plateau_temporaire, pos[0], pos[1], tuile)
     ]
 
@@ -181,6 +185,7 @@ def options(pos):
         if ev:
             t = fltk.type_ev(ev)
             if t == "ClicGauche":
+                music.play_click_sound(globals.click_1)
                 x, y = fltk.abscisse(ev), fltk.ordonnee(ev)
                 if x2-60 <= x <= x2-30 and debut_y <= y <= debut_y+40:
                     if offset - NB_COL >= 0:

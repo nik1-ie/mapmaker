@@ -5,13 +5,14 @@ import graphique_utils
 import actions
 import sauvegarde
 import tuiles_gestion
+import music
 
 def gerer_clic_barre_outils(x, y):
     """
     Gère les clics de souris sur la barre d'outils, en changeant le mode d'action ou en effectuant des actions spéciales
     comme le zoom, l'annulation, la restauration, etc.
     """
-    
+
     if y > globals.HAUTEUR_BARRE_OUTILS:
         return False
 
@@ -29,6 +30,7 @@ def gerer_clic_barre_outils(x, y):
 
         if (x_bouton <= x <= x_bouton + globals.LARGEUR_BOUTON and 
             y_bouton <= y <= y_bouton + globals.HAUTEUR_BOUTON):
+            music.play_click_sound(globals.click_1) 
             if action in ["ajouter", "supprimer", "remplacer", "remplir", "selectionner"]:
                 globals.mode_actuel = action
                 globals.besoin_redessiner = True
@@ -51,6 +53,7 @@ def gerer_clic_barre_outils(x, y):
         
         if (x_bouton <= x <= x_bouton + globals.LARGEUR_BOUTON and 
             y_bouton <= y <= y_bouton + globals.HAUTEUR_BOUTON):
+            music.play_click_sound(globals.click_1) 
             if action == "zoom_plus":
                 globals.facteur_zoom = min(globals.ZOOM_MAX, globals.facteur_zoom * 1.2)
             elif action == "zoom_moins":
@@ -58,7 +61,11 @@ def gerer_clic_barre_outils(x, y):
             elif action == "grille":
                 globals.afficher_grille = not globals.afficher_grille
             elif action == "centrer":
-                globals.pan_x, globals.pan_y = 0, 0
+                if globals.chemin_de_tuiles == "./pack1/tuiles/":
+                    globals.chemin_de_tuiles = "./pack1/ghi/"
+                else: 
+                    globals.chemin_de_tuiles = "./pack1/tuiles/"
+                fltk.mise_a_jour()
             elif action == "sauvegarde":
                 lst, x, y = tuiles_gestion.dico_to_lst(globals.cases_remplies)
                 sauvegarde.save(lst)

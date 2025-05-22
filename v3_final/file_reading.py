@@ -50,6 +50,8 @@ def nom_tuile_court(chemin_tuile):
     """
     Extrait les 4 premiers caractères du nom de fichier (sans extension) à partir d'un chemin.
     """
+    if chemin_tuile is None:
+        return None
     return os.path.splitext(os.path.basename(chemin_tuile))[0][:4]
 
 def trouver_chemin_pack():
@@ -57,17 +59,7 @@ def trouver_chemin_pack():
     Trouve le chemin du pack de tuiles en fonction de la structure de répertoires.
     Renvoie le chemin du répertoire contenant les tuiles.
     """
-    if type(globals.pack_1) == dict:
-        chemin = "./pack1/tuiles/"
-        if not os.path.exists(chemin):
-            alternatives = ["./pack1/", "./tuiles/", ".", "./assets/"]
-            for alt in alternatives:
-                if os.path.exists(alt):
-                    chemin = alt
-                    break
-        return chemin
-    else:
-        return globals.pack_1
+    return globals.chemin_de_tuiles
     
 def generer_nom_capture(dossier="captures"):
     """

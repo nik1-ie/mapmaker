@@ -1,7 +1,7 @@
 import fltk
 import globals
 import graphique_utils
-
+import os
 
 
 def quadrillage(lignes, colonnes):
@@ -38,7 +38,15 @@ def affichage_map(plateau, lignes, colonnes):
     for i in range(len(plateau)):
         for j in range(len(plateau[i])):
             if plateau[i][j] != None:
-                fltk.image(j * (larg / lignes), i * (haut/colonnes), chemin + plateau[i][j] + '.png', largeur=larg // lignes, hauteur=haut // colonnes, ancrage='nw')
+                nom = plateau[i][j]
+                if os.path.exists(f'pack1/tuiles/{nom}.png'):
+                    chemin_img = f'pack1/tuiles/{nom}.png'
+                elif os.path.exists(f'pack1/decors/terre/{nom}.png'):
+                    chemin_img = f'pack1/decors/terre/{nom}.png'
+                else:
+                    chemin_img = None
+                if chemin_img:
+                    fltk.image(j * (larg / lignes), i * (haut/colonnes), chemin_img, largeur=larg // lignes, hauteur=haut // colonnes, ancrage='nw')
     fltk.mise_a_jour()
 
 def plateau_vide(l, c):
@@ -72,8 +80,15 @@ def dessiner_carte(plateau, lignes, colonnes, pan_x, pan_y, facteur_zoom, min_x=
             matrice_y = indice_y - min_x
             matrice_x = indice_x - min_y
             if 0 <= matrice_y < lignes and 0 <= matrice_x < colonnes and plateau[matrice_y][matrice_x] is not None:
-                chemin_image = f"./pack1/tuiles/{plateau[matrice_y][matrice_x]}.png"
-                fltk.image(x + taille_case // 2, y + taille_case // 2,
+                nom = plateau[matrice_y][matrice_x]
+                if os.path.exists(f'{globals.chemin_de_tuiles}{nom}.png'):
+                    chemin_image = f"{globals.chemin_de_tuiles}{nom}.png"
+                elif os.path.exists(f'pack1/decors/terre/{nom}.png'):
+                    chemin_image = f'pack1/decors/terre/{nom}.png'
+                else:
+                    chemin_image = None
+                if chemin_image:
+                    fltk.image(x + taille_case // 2, y + taille_case // 2,
                         chemin_image, largeur=taille_case, hauteur=taille_case,
                         ancrage='center')
     
